@@ -23,8 +23,9 @@ extern "C" {
 #define EPOCH_BASE_YEAR_AS_SECONDS (unsigned int)(EPOCH_BASE_YEAR * SECONDS_PER_YEAR)
 #define EPOCH_BASE_LEAP_YEARS      (unsigned int)(EPOCH_BASE_YEAR / 4 - EPOCH_BASE_YEAR / 100 + EPOCH_BASE_YEAR / 400 + 1)
 
+const static unsigned int MONTH_DAYS[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 const static unsigned int MONTH2DAYS[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
-unsigned int timegm_nocheck(
+static unsigned int timegm_nocheck(
   const unsigned int sec,
   const unsigned int min,
   const unsigned int hour,
@@ -71,8 +72,6 @@ xs_timegm(sec, min, hour, mday, month, year)
   unsigned int mday;
   unsigned int month;
   unsigned int year;
-INIT:
-  static unsigned int MONTH_DAYS[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 CODE:
 {
   if (month > 11) {
