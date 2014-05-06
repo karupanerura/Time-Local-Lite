@@ -37,20 +37,18 @@ sub do_test {
     }
     $t->no_plan();
     for my $type (qw/timegm timelocal/) {
-        for my $module (qw/Time::Local::Lite/) {
-            my $srcfunc = Time::Local->can($type);
-            my $myfunc  = $module->can($type);
-            $t->subtest("${module}::${type}" => sub {
-                $t->expected_tests(scalar @patterns);
-                for my $pattern (@patterns) {
-                    my @args = @$pattern;
-                    my $src  = $srcfunc->(@args);
-                    my $mine = $myfunc->(@args);
-                    my $name = sprintf "%02d-%02d-%02dT%02d:%02d:%02dZ\tduration:%s", $args[5], $args[4]+1, @args[3,2,1,0], duration($src - $mine);
-                    $t->is_num($mine, $src, $name);
-                }
-            });
-        }
+        my $srcfunc = Time::Local->can($type);
+        my $myfunc  = Time::Local::Lite->can($type);
+        $t->subtest($type => sub {
+            $t->expected_tests(scalar @patterns);
+            for my $pattern (@patterns) {
+                my @args = @$pattern;
+                my $src  = $srcfunc->(@args);
+                my $mine = $myfunc->(@args);
+                my $name = sprintf "%02d-%02d-%02dT%02d:%02d:%02dZ\tduration:%s", $args[5], $args[4]+1, @args[3,2,1,0], duration($src - $mine);
+                $t->is_num($mine, $src, $name);
+            }
+        });
     }
     $t->done_testing(2);
     return $t->is_passing;
